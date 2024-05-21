@@ -1,11 +1,21 @@
 steps:
   # Step 1: Build the Docker image
   - name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-t", "gcr.io/slc-air-quality-424017/aqi-predictor", "."]
+    args:
+      [
+        "build",
+        "-t",
+        "us-west2-docker.pkg.dev/continual-modem-424017-r2/slc-air-quality/aqi-predictor",
+        ".",
+      ]
 
   # Step 2: Push the image to Google Container Registry
   - name: "gcr.io/cloud-builders/docker"
-    args: ["push", "gcr.io/slc-air-quality-424017/aqi-predictor"]
+    args:
+      [
+        "push",
+        "us-west2-docker.pkg.dev/continual-modem-424017-r2/slc-air-quality/aqi-predictor",
+      ]
 
   # Step 3: Deploy the image to Cloud Run
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
@@ -16,7 +26,7 @@ steps:
         "deploy",
         "aqi-predictor",
         "--image",
-        "gcr.io/slc-air-quality-424017/aqi-predictor",
+        "us-west2-docker.pkg.dev/continual-modem-424017-r2/slc-air-quality/aqi-predictor",
         "--region",
         "us-west2",
         "--platform",
@@ -25,4 +35,4 @@ steps:
       ]
 
 images:
-  - "gcr.io/slc-air-quality-424017/aqi-predictor"
+  - "us-west2-docker.pkg.dev/continual-modem-424017-r2/slc-air-quality/aqi-predictor"
