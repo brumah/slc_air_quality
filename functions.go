@@ -1,22 +1,19 @@
 package main
 
 import (
-	// "context"
 	"encoding/json"
-	// "fmt"
 	"io"
 	"log"
 	"math"
 	"net/http"
-	// "time"
-	// "cloud.google.com/go/bigquery"
-	// "google.golang.org/api/iterator"
+
+	"cloud.google.com/go/bigquery"
 )
 
 type Data struct {
 	Main Main `json:"main"`
 	Wind Wind `json:"wind"`
-	// AQI  bigquery.Value
+	AQI  bigquery.Value
 }
 
 type Main struct {
