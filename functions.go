@@ -84,7 +84,7 @@ func (d *Data) predict() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	client, err := bigquery.NewClient(ctx, "slc-air-quality-424017")
+	client, err := bigquery.NewClient(ctx, "continual-modem-424017-r2")
 	if err != nil {
 		log.Printf("Failed to create BigQuery client: %v", err)
 	}
@@ -96,7 +96,7 @@ func (d *Data) predict() {
 		FROM ML.PREDICT(MODEL %s,
 		  (
 		  SELECT
-		    TIMESTAMP("%v") AS data_timestamp,
+		    TIMESTAMP("%v") AS date_timestamp,
 		    %v AS temperature,
 		    %v AS temp_min,
 		    %v AS temp_max,

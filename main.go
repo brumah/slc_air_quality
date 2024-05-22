@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -8,6 +9,7 @@ import (
 
 func main() {
 	http.HandleFunc("/", rootHandler)
+	fmt.Printf("Server is listening on 8080...\n")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
