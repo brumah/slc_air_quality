@@ -6,13 +6,14 @@ import (
 	"log"
 	"math"
 	"net/http"
-	// "cloud.google.com/go/bigquery"
+
+	"cloud.google.com/go/bigquery"
 )
 
 type Data struct {
 	Main Main `json:"main"`
 	Wind Wind `json:"wind"`
-	// AQI  bigquery.Value
+	AQI  bigquery.Value
 }
 
 type Main struct {
