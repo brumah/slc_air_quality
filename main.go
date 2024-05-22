@@ -14,7 +14,7 @@ func main() {
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	data := fetchLiveWeatherData()
 
-	// data.predict()
+	data.predict()
 
 	data.Main.celsiusToFarhenheit()
 	data.Wind.mpsToMph()
