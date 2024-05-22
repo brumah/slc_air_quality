@@ -53,6 +53,7 @@ func (d *Data) TruncateDecimals() {
 	d.Main.Temp_min = math.Trunc(d.Main.Temp_min)
 	d.Main.Temp_max = math.Trunc(d.Main.Temp_max)
 	d.Wind.Speed = math.Trunc(d.Wind.Speed)
+	d.AQI = math.Trunc(d.AQI.(float64))
 }
 
 func fetchLiveWeatherData() Data {
