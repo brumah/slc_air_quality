@@ -1,19 +1,22 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"math"
 	"net/http"
+	"time"
 
 	"cloud.google.com/go/bigquery"
+	"google.golang.org/api/iterator"
 )
 
 type Data struct {
 	Main Main `json:"main"`
 	Wind Wind `json:"wind"`
-	AQI  bigquery.Value
 }
 
 type Main struct {
@@ -75,60 +78,58 @@ func fetchLiveWeatherData() Data {
 	return data
 }
 
-// func (d *Data) predict() {
+func (d *Data) predict() {
 
-// 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-// 	defer cancel()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
-// 	client, err := bigquery.NewClient(ctx, "slc-air-quality-424017")
-// 	if err != nil {
-// 		log.Printf("Failed to create BigQuery client: %v", err)
-// 	}
-// 	defer client.Close()
+	client, err := bigquery.NewClient(ctx, "slc-air-quality-424017")
+	if err != nil {
+		log.Printf("Failed to create BigQuery client: %v", err)
+	}
+	defer client.Close()
 
-// 	predictionQuery := fmt.Sprintf(
-// 		`
-// 		SELECT *
-// 		FROM ML.PREDICT(MODEL %s,
-// 		  (
-// 		  SELECT
-// 		    TIMESTAMP("%v") AS data_timestamp,
-// 		    %v AS temperature,
-// 		    %v AS temp_min,
-// 		    %v AS temp_max,
-// 		    %v AS wind,
-// 		    %v AS humidity,
-// 			%v AS pressure
-// 		  )
-// 		)
-// 		`,
-// 		"`continual-modem-424017-r2.data.prediction_model`",
-// 		time.Now().Format("2006-01-02"),
-// 		d.Main.Temp,
-// 		d.Main.Temp_min,
-// 		d.Main.Temp_max,
-// 		d.Wind.Speed,
-// 		d.Main.Humidity,
-// 		d.Main.Pressure)
+	predictionQuery := fmt.Sprintf(
+		`
+		SELECT *
+		FROM ML.PREDICT(MODEL %s,
+		  (
+		  SELECT
+		    TIMESTAMP("%v") AS data_timestamp,
+		    %v AS temperature,
+		    %v AS temp_min,
+		    %v AS temp_max,
+		    %v AS wind,
+		    %v AS humidity,
+			%v AS pressure
+		  )
+		)
+		`,
+		"`continual-modem-424017-r2.data.prediction_model`",
+		time.Now().Format("2006-01-02"),
+		d.Main.Temp,
+		d.Main.Temp_min,
+		d.Main.Temp_max,
+		d.Wind.Speed,
+		d.Main.Humidity,
+		d.Main.Pressure)
 
-// 	query := client.Query(predictionQuery)
-// 	it, err := query.Read(ctx)
-// 	if err != nil {
-// 		log.Printf("Failed to execute query: %v", err)
-// 	}
+	query := client.Query(predictionQuery)
+	it, err := query.Read(ctx)
+	if err != nil {
+		log.Printf("Failed to execute query: %v", err)
+	}
 
-// 	var results []map[string]bigquery.Value
-// 	for {
-// 		var row map[string]bigquery.Value
-// 		err := it.Next(&row)
-// 		if err == iterator.Done {
-// 			break
-// 		}
-// 		if err != nil {
-// 			log.Printf("Failed to read query results: %v", err)
-// 		}
-// 		results = append(results, row)
-// 	}
-
-// 	d.AQI = results[0]["predicted_AQI"]
-// }
+	var results []map[string]bigquery.Value
+	for {
+		var row map[string]bigquery.Value
+		err := it.Next(&row)
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			log.Printf("Failed to read query results: %v", err)
+		}
+		results = append(results, row)
+	}
+}
