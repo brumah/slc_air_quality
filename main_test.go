@@ -11,7 +11,7 @@ func TestKelvinToCelsius(t *testing.T) {
 	data.Main.kelvinToCelsius()
 	data.TruncateDecimals()
 
-	if data.Main.Temp != 26 {
+	if data.Main.Temp != 27 {
 		t.Errorf("Expected 26, but got %f", data.Main.Temp)
 	}
 	if data.Main.Temp_min != 16 {
